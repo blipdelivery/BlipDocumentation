@@ -2,9 +2,6 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
   - javascript
 
 toc_footers:
@@ -14,226 +11,330 @@ toc_footers:
 includes:
   - errors
 
-search: true
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the Blip.delivery API! Our API endpoints can be bundled into any application using the npm module `blip-deliveries`.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+ This documents the use of the Blip.delivery API using server-side node.js, and will eventually document the library in other backend laguages.
 
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+ To get started with a live account, contact Blip to get a `storeID`. Alternatively, you can play around with the functions in testmode, by replacing the `storeID` with `'test'`
 
-# Authentication
+# Getting started
 
 > To authorize, use this code:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
 ```javascript
-const kittn = require('kittn');
+const blip = require('blip-deliveries')('YOURSTOREID'); // Livemode
 
-let api = kittn.authorize('meowmeowmeow');
+const blip = require('blip-deliveries')('test'); // Testmode
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+Blip uses a storeID to allow access to the API. You can register by [contacting sales](http://example.com/developers).
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>YOURSTOREID</code> with your own storeID.
 </aside>
 
-# Kittens
+# Get a delivery quote
 
-## Get All Kittens
+This retrieves a live price for a delivery, given two addresses. If your account uses subscription based pricing, use `getDeliveriesLeft` instead.
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
+### Required JSON
 
 ```javascript
-const kittn = require('kittn');
+const blip = require('blip-deliveries')('test'); // Testmode
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+const quote = await blip.getQuote({
+    pickupAddress: "156 Enfield Place, Mississauga, ON",
+    deliveryAddress: "100 City Centre drive, Mississauga, ON"
+})
 ```
 
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+Parameter | Description
+--------- | -----------
+pickupAddress | The address of your pickup point. Include the locality + city
+available | The address of your delivery point. Include the locality + city
 
 <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+Remember — Blip uses googlemaps to parse the address. Always ensure you enter the complete address, or we will be unable to verify the correct coordinates.
 </aside>
 
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
+> Example response:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "blipFee": 100,
+  "price": 337,
+  "totalPrice": 447
 }
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
+### Response JSON
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+blipFee | Integer fee of the API call
+price | Integer price of the delivery
+totalPrice | Integer price of the delivery charged to your account
 
-## Delete a Specific Kitten
+<aside class="notice">
+The prices returned are all in cents. eg. 421 == $ 4.21
+</aside>
 
-```ruby
-require 'kittn'
+# Create a new delivery
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
+This creates a new delivery request, and charges the card on file. If you do not have any card on file with us, [download]() the Blip Store app, and update your card details.
 
 ```javascript
-const kittn = require('kittn');
+var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeID to switch to livemode
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
+// All fields are required
+
+const delivery = await blip.createNewDelivery({
+    "delivery": {
+        "instructions": "Deliver to the lobby", //Instructions to deliver
+        "contact": {
+            "name": "John Smith", // Name of the reciever
+            "number": "+16479839837" // Number of the reciever
+        },
+        "location": {
+            "address": "156 Enfield Place, Mississauga, ON" // Address of the dropoff point
+        }
+    },
+    "pickup": {
+        "order_number": "ABC123", // Your own order number for identifying and tracking
+        "instructions": "Pickup from the main desk", // Instructions to pickup
+        "contact": {
+            "number": "+16478229867" // Pickup point helpline incase driver cannot find you
+        },
+        "location": {
+            "address": "200 Burnhamthorpe road west, Mississauga, ON" // Address of the pickup point
+        }
+    }
+})
 ```
 
-> The above command returns JSON structured like this:
+### Required JSON
+
+Parameter | Description
+--------- | -----------
+delivery | A delivery object composed of a contact, location, and instruction.
+pickup | A pickup object composed of an order number, contact, location, and instruction.
+delivery.contact.name | String name of the reciever
+delivery.contact.number | String phone number of the reciever
+delivery.location.address | String address of the delivery location
+delivery.instruction | String instruction for the driver upon reaching the delivery point
+pickup.orderNumber | String order number for your own reference
+pickup.instructions | String instructions for the driver upon reaching the pickup location
+pickup.contact.number | String phone number the driver can call if there is a problem during pickup
+pickup.location.address | String address of the pickup location
+
+> Example response:
 
 ```json
 {
-  "id": 2,
-  "deleted" : ":("
+	"store": {
+		"storeID": "-LJlJ-xuYqEtgs6C1qky",
+		"storeName": "Bobs Brilliant BattleAxes"
+	},
+	"delivery": {
+		"contact": {
+			"name": "John Smith",
+			"number": "+16479839837"
+		},
+		"location": {
+			"address": "156 Enfield Place, Mississauga",
+			"latitude": 43.5907771,
+			"longitude": -79.6340031
+		},
+		"instructions": "Deliver to the lobby"
+	},
+	"pickup": {
+		"order_number": "ABC123",
+		"contact": {
+			"number": "+16478229867"
+		},
+		"location": {
+			"address": "200 Burnhamthorpe road west, Mississauga",
+			"latitude": 43.5890505,
+			"longitude": -79.64045229999999
+		},
+		"instructions": "Pickup from the main desk"
+	},
+	"status": {
+		"timeCreated": 1537389047
+	},
+	"chargeID": "ch_1DCCJvA4IkmlaKtpe3YcDT2G",
+	"id": "PCAPIIL"
 }
 ```
 
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
+### Response JSON
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to delete
+delivery | A delivery object composed of a contact, location, and instruction.
+pickup | A pickup object composed of an order number, contact, location, and instruction.
+delivery.contact.name | String name of the reciever
+delivery.contact.number | String phone number of the reciever
+delivery.location.address | String address of the delivery location
+delivery.location.latitude | Coordinate of the delivery location's latitude
+delivery.location.longitude | Coordinate of the delivery location's longitude
+delivery.instruction | String instruction for the driver upon reaching the delivery point
+pickup.orderNumber | String order number for your own reference
+pickup.instructions | String instructions for the driver upon reaching the pickup location
+pickup.contact.number | String phone number the driver can call if there is a problem during pickup
+pickup.location.address | String address of the pickup location
+pickup.location.latitude | Coordinate of the pickup location's latitude
+pickup.location.longitude | Coordinate of the pickup location's longitude
+status.timeCreated | UNIX timestamp when the delivery request was generated
+chargeID | An ID referencing the charge made to the card on file
+id | The deliveryID of the generated delivery
+
+<aside class="notice">
+Remember to save the <code>deliveryID</code> in your database, so you can retrieve it's status later.
+</aside>
+
+# Get delivery status
+
+This retrieves a delivery object, and it's current status
+
+```javascript
+var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeID to switch to livemode
+
+const status = await blip.getDeliveryStatus({
+    "deliveryID": "ASF781" // Replace with your deliveryID
+})
+```
+
+### Required JSON
+
+Parameter | Description
+--------- | -----------
+deliveryID | String deliveryID of a delivery created using `createNewDelivery`
+
+> Example response:
+
+```json
+{
+	"timeTaken": 1537144441,
+	"timePickedUp": 1537144845,
+	"timeDelivered": 1537145169,
+	"timeCreated": 1537144418,
+	"pickupETA": 1537144845,
+	"dropoffETA": 1537144588,
+	"courier": {
+		"firstName": "Tai",
+		"id": "bafa0a6ffbbead086d2aff257bdae684",
+		"lastName": "Lopez",
+		"phoneNumber": "+16479839837",
+		"photoURL": "https://firebasestorage.googleapis.com/v0/b/blip-testapp.appspot.com/o/profilePictures%2F97548650-F8A1-4905-8D80-BDB4CBC6750C?alt=media&token=2bc75dd7-79f5-4bab-b862-8719aa7c4bb9"
+	}
+}
+```
+
+### Response JSON
+
+Parameter | Description
+--------- | -----------
+timeTaken | UNIX timestamp in seconds of the time the delivery was accepted by a courier
+timePickedUp | UNIX timestamp in seconds of the time the delivery was picked up
+timeDelivered | UNIX timestamp in seconds of the time the delivery was delivered
+timeCreated | UNIX timestamp in seconds of the time the delivery was created
+pickupETA | UNIX timestamp in seconds of an estimated time of pickup
+dropoffETA | UNIX timestamp in seconds of an estimated time of dropoff
+courier | An object containing the `firstName`, `id`, `lastName`, `phoneNumber` and `photoURL`
+courier.firstName | String firstname of the courier on the job
+courier.lastName | String lastname of the courier on the job
+courier.id | String of the courier's ID
+courier.phoneNumber | String of the phone number of the courier
+courier.photoURL | String of the URL for the courier's profile picture
+
+# Cancel delivery
+
+You can cancel a delivery if it hasn't already been accepted by a courier. We will eventually add support for all types of cancellations, but currently only allow for cancellations before a courier has accepted a delivery request. A 100% refund will trigger upon cancellation, and your funds will appear within 5 business days.
+
+```javascript
+var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeID to switch to livemode
+
+// A deliveryID is required
+
+const cancellation = await blip.cancelDelivery({
+    "deliveryID": "ASF781" // Replace with your deliveryID
+})
+```
+
+### Required JSON
+
+Parameter | Description
+--------- | -----------
+deliveryID | String deliveryID of a delivery created using `createNewDelivery`
+
+> Example response:
+
+```json
+{
+	"refund": {
+		"id": "re_1DCHmRA4IkmlaKtpRZC7i0mx",
+		"object": "refund",
+		"amount": 571,
+		"balance_transaction": "txn_1DCHmRA4IkmlaKtpC6JdMukg",
+		"charge": "ch_1DCCJvA4IkmlaKtpe3YcDT2G",
+		"created": 1537410035,
+		"currency": "cad",
+		"metadata": {},
+		"reason": null,
+		"receipt_number": null,
+		"status": "succeeded"
+	},
+	"cancellation": {
+		"chargeID": "ch_1DCCJvA4IkmlaKtpe3YcDT2G",
+		"delivery": {
+			"contact": {
+				"name": "John Smith",
+				"number": "+16479839837"
+			},
+			"instructions": "Drop off at security",
+			"location": {
+				"address": "156 Enfield Place, Mississauga",
+				"latitude": 43.5907771,
+				"longitude": -79.6340031
+			}
+		},
+		"earnings": 514,
+		"pickup": {
+			"contact": {
+				"name": "James Bean",
+				"number": "+16479839836"
+			},
+			"instructions": "Pickup from main desk",
+			"location": {
+				"address": "200 Burnhamthorpe road west, Mississauga",
+				"latitude": 43.5890505,
+				"longitude": -79.64045229999999
+			},
+			"order_number": "ASF715N"
+		},
+		"status": {
+			"timeCreated": 1537389047
+		},
+		"store": {
+			"storeID": "-LJlJ-xuYqEtgs6C1qky",
+			"storeName": "Bobs Brilliant BattleAxes"
+		}
+	}
+}
+```
+
+### Response JSON
+
+Parameter | Description
+--------- | -----------
+refund | A refund object verifying a successful refund was made
+cancellation | A delivery object similar to one returned by `createNewDelivery`
+
+
+
 
