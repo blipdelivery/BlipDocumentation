@@ -360,8 +360,8 @@ deliveryID | String deliveryID of a delivery created using `createNewDelivery`
 
 ```json
 {
-	latitude: 43.5890505,
-	longitude: -79.6404522
+	"latitude": 43.5890505,
+	"longitude": -79.6404522
 }
 ```
 
