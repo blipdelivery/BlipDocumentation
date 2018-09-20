@@ -265,6 +265,17 @@
               </ul>
           </li>
           <li>
+            <a href="#get-driver-location" class="toc-h1 toc-link" data-title="Get driver location">Get driver location</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#required-json-5" class="toc-h2 toc-link" data-title="Required JSON">Required JSON</a>
+                  </li>
+                  <li>
+                    <a href="#response-json-5" class="toc-h2 toc-link" data-title="Response JSON">Response JSON</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
       </ul>
@@ -363,23 +374,23 @@ The prices returned are all in cents. eg. 421 == $ 4.21
 
 <span class="kr">const</span> <span class="nx">delivery</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">blip</span><span class="p">.</span><span class="nx">createNewDelivery</span><span class="p">({</span>
     <span class="s2">"delivery"</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Deliver to the lobby"</span><span class="p">,</span> <span class="c1">//Instructions to deliver</span>
+        <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Deliver to the lobby"</span><span class="p">,</span>
         <span class="s2">"contact"</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"John Smith"</span><span class="p">,</span> <span class="c1">// Name of the reciever</span>
-            <span class="s2">"number"</span><span class="p">:</span> <span class="s2">"+16479839837"</span> <span class="c1">// Number of the reciever</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"John Smith"</span><span class="p">,</span>
+            <span class="s2">"number"</span><span class="p">:</span> <span class="s2">"+16479839837"</span>
         <span class="p">},</span>
         <span class="s2">"location"</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">"address"</span><span class="p">:</span> <span class="s2">"156 Enfield Place, Mississauga, ON"</span> <span class="c1">// Address of the dropoff point</span>
+            <span class="s2">"address"</span><span class="p">:</span> <span class="s2">"156 Enfield Place, Mississauga, ON"</span> 
         <span class="p">}</span>
     <span class="p">},</span>
     <span class="s2">"pickup"</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">"order_number"</span><span class="p">:</span> <span class="s2">"ABC123"</span><span class="p">,</span> <span class="c1">// Your own order number for identifying and tracking</span>
-        <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Pickup from the main desk"</span><span class="p">,</span> <span class="c1">// Instructions to pickup</span>
+        <span class="s2">"order_number"</span><span class="p">:</span> <span class="s2">"ABC123"</span><span class="p">,</span>
+        <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Pickup from the main desk"</span><span class="p">,</span>
         <span class="s2">"contact"</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">"number"</span><span class="p">:</span> <span class="s2">"+16478229867"</span> <span class="c1">// Pickup point helpline incase driver cannot find you</span>
+            <span class="s2">"number"</span><span class="p">:</span> <span class="s2">"+16478229867"</span>
         <span class="p">},</span>
         <span class="s2">"location"</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">"address"</span><span class="p">:</span> <span class="s2">"200 Burnhamthorpe road west, Mississauga, ON"</span> <span class="c1">// Address of the pickup point</span>
+            <span class="s2">"address"</span><span class="p">:</span> <span class="s2">"200 Burnhamthorpe road west, Mississauga, ON"</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">})</span>
@@ -555,7 +566,7 @@ Remember to save the <code>deliveryID</code> in your database, so you can retrie
 <pre class="highlight javascript tab-javascript"><code><span class="kd">var</span> <span class="nx">blip</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'blip-deliveries'</span><span class="p">)(</span><span class="s1">'test'</span><span class="p">);</span> <span class="c1">//Replace 'test' with your storeID to switch to livemode</span>
 
 <span class="kr">const</span> <span class="nx">status</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">blip</span><span class="p">.</span><span class="nx">getDeliveryStatus</span><span class="p">({</span>
-    <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span> <span class="c1">// Replace with your deliveryID</span>
+    <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span>
 <span class="p">})</span>
 </code></pre><h3 id='required-json-3'>Required JSON</h3>
 <table><thead>
@@ -651,7 +662,7 @@ Remember to save the <code>deliveryID</code> in your database, so you can retrie
 <span class="c1">// A deliveryID is required</span>
 
 <span class="kr">const</span> <span class="nx">cancellation</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">blip</span><span class="p">.</span><span class="nx">cancelDelivery</span><span class="p">({</span>
-    <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span> <span class="c1">// Replace with your deliveryID</span>
+    <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span>
 <span class="p">})</span>
 </code></pre><h3 id='required-json-4'>Required JSON</h3>
 <table><thead>
@@ -734,6 +745,53 @@ Remember to save the <code>deliveryID</code> in your database, so you can retrie
 <tr>
 <td>cancellation</td>
 <td>A delivery object similar to one returned by <code>createNewDelivery</code></td>
+</tr>
+</tbody></table>
+<h1 id='get-driver-location'>Get driver location</h1>
+<p>After a delivery has been accepted, it contains a <code>courier</code> property. The <code>courier</code> is a driver that has been dispatched, who&#39;s location updates every 500-700 meters. This function should not be called more than once every 3 minutes, as doing so may result in excess charges to your account. Furthermore, a status code of <code>400</code> will be returned if the <code>deliveryID</code> references a delivery that has not been picked up. To ensure a status code of <code>200</code>, make sure to call <code>getDeliveryStatus</code> first, and check if it contains a <code>courier</code> property.</p>
+
+<p>To get the current location of your driver, use <code>getDriverLocation(options)</code> where <code>options</code> is an object containing the <code>deliveryID</code> of the delivery to track</p>
+<pre class="highlight javascript tab-javascript"><code><span class="kd">var</span> <span class="nx">blip</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'blip-deliveries'</span><span class="p">)(</span><span class="s1">'test'</span><span class="p">);</span> <span class="c1">//Replace 'test' with your storeID to switch to livemode</span>
+
+<span class="c1">// A deliveryID is required</span>
+
+<span class="kr">const</span> <span class="nx">status</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">blip</span><span class="p">.</span><span class="nx">getDriverLocation</span><span class="p">({</span>
+    <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span>
+<span class="p">})</span>
+</code></pre><h3 id='required-json-5'>Required JSON</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>deliveryID</td>
+<td>String deliveryID of a delivery created using <code>createNewDelivery</code></td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="err">latitude</span><span class="p">:</span><span class="w"> </span><span class="mf">43.5890505</span><span class="p">,</span><span class="w">
+    </span><span class="err">longitude</span><span class="p">:</span><span class="w"> </span><span class="mf">-79.6404522</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='response-json-5'>Response JSON</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>latitude</td>
+<td>Number indicating the current latitude of the driver on your job</td>
+</tr>
+<tr>
+<td>longitude</td>
+<td>Number indicating the current longitude of the driver on your job</td>
 </tr>
 </tbody></table>
 <h1 id='errors'>Errors</h1>
