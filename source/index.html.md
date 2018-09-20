@@ -93,23 +93,23 @@ var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeI
 
 const delivery = await blip.createNewDelivery({
     "delivery": {
-        "instructions": "Deliver to the lobby", //Instructions to deliver
+        "instructions": "Deliver to the lobby",
         "contact": {
-            "name": "John Smith", // Name of the reciever
-            "number": "+16479839837" // Number of the reciever
+            "name": "John Smith",
+            "number": "+16479839837"
         },
         "location": {
-            "address": "156 Enfield Place, Mississauga, ON" // Address of the dropoff point
+            "address": "156 Enfield Place, Mississauga, ON" 
         }
     },
     "pickup": {
-        "order_number": "ABC123", // Your own order number for identifying and tracking
-        "instructions": "Pickup from the main desk", // Instructions to pickup
+        "order_number": "ABC123",
+        "instructions": "Pickup from the main desk",
         "contact": {
-            "number": "+16478229867" // Pickup point helpline incase driver cannot find you
+            "number": "+16478229867"
         },
         "location": {
-            "address": "200 Burnhamthorpe road west, Mississauga, ON" // Address of the pickup point
+            "address": "200 Burnhamthorpe road west, Mississauga, ON"
         }
     }
 })
@@ -204,7 +204,7 @@ This retrieves a delivery object, and it's current status
 var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeID to switch to livemode
 
 const status = await blip.getDeliveryStatus({
-    "deliveryID": "ASF781" // Replace with your deliveryID
+    "deliveryID": "ASF781"
 })
 ```
 
@@ -261,7 +261,7 @@ var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeI
 // A deliveryID is required
 
 const cancellation = await blip.cancelDelivery({
-    "deliveryID": "ASF781" // Replace with your deliveryID
+    "deliveryID": "ASF781"
 })
 ```
 
@@ -334,6 +334,42 @@ Parameter | Description
 refund | A refund object verifying a successful refund was made
 cancellation | A delivery object similar to one returned by `createNewDelivery`
 
+# Get driver location
 
+After a delivery has been accepted, it contains a `courier` property. The `courier` is a driver that has been dispatched, who's location updates every 500-700 meters. This function should not be called more than once every 3 minutes, as doing so may result in excess charges to your account. Furthermore, a status code of `400` will be returned if the `deliveryID` references a delivery that has not been picked up. To ensure a status code of `200`, make sure to call `getDeliveryStatus` first, and check if it contains a `courier` property.
+
+To get the current location of your driver, use `getDriverLocation(options)` where `options` is an object containing the `deliveryID` of the delivery to track
+
+```javascript
+var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeID to switch to livemode
+
+// A deliveryID is required
+
+const status = await blip.getDriverLocation({
+    "deliveryID": "ASF781"
+})
+```
+
+### Required JSON
+
+Parameter | Description
+--------- | -----------
+deliveryID | String deliveryID of a delivery created using `createNewDelivery`
+
+> Example response:
+
+```json
+{
+	latitude: 43.5890505,
+	longitude: -79.6404522
+}
+```
+
+### Response JSON
+
+Parameter | Description
+--------- | -----------
+latitude | Number indicating the current latitude of the driver on your job
+longitude | Number indicating the current longitude of the driver on your job
 
 
