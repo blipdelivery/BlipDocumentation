@@ -2,7 +2,8 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - javascript
+  - javascript: javascript
+  - shell: http
 
 toc_footers:
   - <a href='#'>Sign Up for a storeID</a>
@@ -12,7 +13,7 @@ includes:
 
 ---
 
-# Introduction
+# Intro
 
 Welcome to the Blip.delivery API! Our API endpoints can be bundled into any application using the npm module `blip-deliveries`.
 
@@ -30,7 +31,11 @@ const blip = require('blip-deliveries')('YOURSTOREID'); // Livemode
 const blip = require('blip-deliveries')('test'); // Testmode
 ```
 
-Blip uses a storeID to allow access to the API. You can register by [contacting sales](http://example.com/developers).
+```shell
+# Authorization is done on a per-call basis. No authorization setup is needed when using Http
+```
+
+Blip uses a storeID to allow access to the API. You can register by [contacting sales](http://www.blip.delivery/).
 
 <aside class="notice">
 You must replace <code>YOURSTOREID</code> with your own storeID.
@@ -50,6 +55,22 @@ const quote = await blip.getQuote({
     deliveryAddress: "100 City Centre drive, Mississauga, ON"
 })
 ```
+
+> Example request:
+
+```shell
+Live API endpoint: https://api.blip.delivery/getDeliveryPrice
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryPrice
+
+JSON body:
+
+{
+	pickupAddress: "156 Enfield Place, Mississauga, ON",
+    deliveryAddress: "100 City Centre drive, Mississauga, ON"
+}
+```
+
 
 Parameter | Description
 --------- | -----------
@@ -113,6 +134,40 @@ const delivery = await blip.createNewDelivery({
         }
     }
 })
+```
+
+> Example request
+
+```shell
+Live API endpoint: https://api.blip.delivery/makeDeliveryRequest
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/makeDeliveryRequest
+
+JSON body:
+
+{
+	"delivery": {
+        "instructions": "Deliver to the lobby",
+        "contact": {
+            "name": "John Smith",
+            "number": "+16479839837"
+        },
+        "location": {
+            "address": "156 Enfield Place, Mississauga, ON" 
+        }
+    },
+    "pickup": {
+        "order_number": "ABC123",
+        "instructions": "Pickup from the main desk",
+        "contact": {
+            "number": "+16478229867"
+        },
+        "location": {
+            "address": "200 Burnhamthorpe road west, Mississauga, ON"
+        }
+    },
+	storeID: "L12354Hhhf9-f"
+}
 ```
 
 ### Required JSON
@@ -208,6 +263,21 @@ const status = await blip.getDeliveryStatus({
 })
 ```
 
+> Example request
+
+```shell
+Live API endpoint: https://api.blip.delivery/getDeliveryStatus
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryStatus
+
+JSON body:
+
+{
+	"deliveryID": "ASF781",
+	"storeID": "L12354Hhhf9-f"
+}
+```
+
 ### Required JSON
 
 Parameter | Description
@@ -263,6 +333,21 @@ var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeI
 const cancellation = await blip.cancelDelivery({
     "deliveryID": "ASF781"
 })
+```
+
+> Example request
+
+```shell
+Live API endpoint: https://api.blip.delivery/cancelDelivery
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/cancelDelivery
+
+JSON body:
+
+{
+	"deliveryID": "ASF781",
+	"storeID": "L12354Hhhf9-f"
+}
 ```
 
 ### Required JSON
@@ -348,6 +433,21 @@ var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeI
 const status = await blip.getDriverLocation({
     "deliveryID": "ASF781"
 })
+```
+
+> Example request
+
+```shell
+Live API endpoint: https://api.blip.delivery/getDriverLocation
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDriverLocation
+
+JSON body:
+
+{
+	"deliveryID": "ASF781",
+	"storeID": "L12354Hhhf9-f"
+}
 ```
 
 ### Required JSON
