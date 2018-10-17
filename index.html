@@ -201,7 +201,7 @@
       <script src="javascripts/all_nosearch.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;javascript&quot;,&quot;shell&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -212,10 +212,11 @@
       <img src="images/logo.png" class="logo" alt="Logo" />
         <div class="lang-selector">
               <a href="#" data-language-name="javascript">javascript</a>
+              <a href="#" data-language-name="shell">http</a>
         </div>
       <ul id="toc" class="toc-list-h1">
           <li>
-            <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+            <a href="#intro" class="toc-h1 toc-link" data-title="Intro">Intro</a>
           </li>
           <li>
             <a href="#getting-started" class="toc-h1 toc-link" data-title="Getting started">Getting started</a>
@@ -286,7 +287,7 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='introduction'>Introduction</h1>
+        <h1 id='intro'>Intro</h1>
 <p>Welcome to the Blip.delivery API! Our API endpoints can be bundled into any application using the npm module <code>blip-deliveries</code>.</p>
 
 <p>This documents the use of the Blip.delivery API using server-side node.js, and will eventually document the library in other backend laguages.</p>
@@ -299,8 +300,9 @@
 <pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">blip</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'blip-deliveries'</span><span class="p">)(</span><span class="s1">'YOURSTOREID'</span><span class="p">);</span> <span class="c1">// Livemode</span>
 
 <span class="kr">const</span> <span class="nx">blip</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'blip-deliveries'</span><span class="p">)(</span><span class="s1">'test'</span><span class="p">);</span> <span class="c1">// Testmode</span>
+</code></pre><pre class="highlight shell tab-shell"><code><span class="c"># Authorization is done on a per-call basis. No authorization setup is needed when using Http</span>
 </code></pre>
-<p>Blip uses a storeID to allow access to the API. You can register by <a href="http://example.com/developers">contacting sales</a>.</p>
+<p>Blip uses a storeID to allow access to the API. You can register by <a href="http://www.blip.delivery/">contacting sales</a>.</p>
 
 <aside class="notice">
 You must replace <code>YOURSTOREID</code> with your own storeID.
@@ -313,6 +315,20 @@ You must replace <code>YOURSTOREID</code> with your own storeID.
     <span class="na">pickupAddress</span><span class="p">:</span> <span class="s2">"156 Enfield Place, Mississauga, ON"</span><span class="p">,</span>
     <span class="na">deliveryAddress</span><span class="p">:</span> <span class="s2">"100 City Centre drive, Mississauga, ON"</span>
 <span class="p">})</span>
+</code></pre>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>Live API endpoint: https://api.blip.delivery/getDeliveryPrice
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryPrice
+
+JSON body:
+
+<span class="o">{</span>
+    pickupAddress: <span class="s2">"156 Enfield Place, Mississauga, ON"</span>,
+    deliveryAddress: <span class="s2">"100 City Centre drive, Mississauga, ON"</span>
+<span class="o">}</span>
 </code></pre>
 <table><thead>
 <tr>
@@ -394,6 +410,39 @@ The prices returned are all in cents. eg. 421 == $ 4.21
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">})</span>
+</code></pre>
+<blockquote>
+<p>Example request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>Live API endpoint: https://api.blip.delivery/makeDeliveryRequest
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/makeDeliveryRequest
+
+JSON body:
+
+<span class="o">{</span>
+    <span class="s2">"delivery"</span>: <span class="o">{</span>
+        <span class="s2">"instructions"</span>: <span class="s2">"Deliver to the lobby"</span>,
+        <span class="s2">"contact"</span>: <span class="o">{</span>
+            <span class="s2">"name"</span>: <span class="s2">"John Smith"</span>,
+            <span class="s2">"number"</span>: <span class="s2">"+16479839837"</span>
+        <span class="o">}</span>,
+        <span class="s2">"location"</span>: <span class="o">{</span>
+            <span class="s2">"address"</span>: <span class="s2">"156 Enfield Place, Mississauga, ON"</span> 
+        <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"pickup"</span>: <span class="o">{</span>
+        <span class="s2">"order_number"</span>: <span class="s2">"ABC123"</span>,
+        <span class="s2">"instructions"</span>: <span class="s2">"Pickup from the main desk"</span>,
+        <span class="s2">"contact"</span>: <span class="o">{</span>
+            <span class="s2">"number"</span>: <span class="s2">"+16478229867"</span>
+        <span class="o">}</span>,
+        <span class="s2">"location"</span>: <span class="o">{</span>
+            <span class="s2">"address"</span>: <span class="s2">"200 Burnhamthorpe road west, Mississauga, ON"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>,
+    storeID: <span class="s2">"L12354Hhhf9-f"</span>
+<span class="o">}</span>
 </code></pre><h3 id='required-json-2'>Required JSON</h3>
 <table><thead>
 <tr>
@@ -568,6 +617,20 @@ Remember to save the <code>deliveryID</code> in your database, so you can retrie
 <span class="kr">const</span> <span class="nx">status</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">blip</span><span class="p">.</span><span class="nx">getDeliveryStatus</span><span class="p">({</span>
     <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span>
 <span class="p">})</span>
+</code></pre>
+<blockquote>
+<p>Example request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>Live API endpoint: https://api.blip.delivery/getDeliveryStatus
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryStatus
+
+JSON body:
+
+<span class="o">{</span>
+    <span class="s2">"deliveryID"</span>: <span class="s2">"ASF781"</span>,
+    <span class="s2">"storeID"</span>: <span class="s2">"L12354Hhhf9-f"</span>
+<span class="o">}</span>
 </code></pre><h3 id='required-json-3'>Required JSON</h3>
 <table><thead>
 <tr>
@@ -664,6 +727,20 @@ Remember to save the <code>deliveryID</code> in your database, so you can retrie
 <span class="kr">const</span> <span class="nx">cancellation</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">blip</span><span class="p">.</span><span class="nx">cancelDelivery</span><span class="p">({</span>
     <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span>
 <span class="p">})</span>
+</code></pre>
+<blockquote>
+<p>Example request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>Live API endpoint: https://api.blip.delivery/cancelDelivery
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/cancelDelivery
+
+JSON body:
+
+<span class="o">{</span>
+    <span class="s2">"deliveryID"</span>: <span class="s2">"ASF781"</span>,
+    <span class="s2">"storeID"</span>: <span class="s2">"L12354Hhhf9-f"</span>
+<span class="o">}</span>
 </code></pre><h3 id='required-json-4'>Required JSON</h3>
 <table><thead>
 <tr>
@@ -758,6 +835,20 @@ Remember to save the <code>deliveryID</code> in your database, so you can retrie
 <span class="kr">const</span> <span class="nx">status</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">blip</span><span class="p">.</span><span class="nx">getDriverLocation</span><span class="p">({</span>
     <span class="s2">"deliveryID"</span><span class="p">:</span> <span class="s2">"ASF781"</span>
 <span class="p">})</span>
+</code></pre>
+<blockquote>
+<p>Example request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>Live API endpoint: https://api.blip.delivery/getDriverLocation
+
+Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDriverLocation
+
+JSON body:
+
+<span class="o">{</span>
+    <span class="s2">"deliveryID"</span>: <span class="s2">"ASF781"</span>,
+    <span class="s2">"storeID"</span>: <span class="s2">"L12354Hhhf9-f"</span>
+<span class="o">}</span>
 </code></pre><h3 id='required-json-5'>Required JSON</h3>
 <table><thead>
 <tr>
@@ -817,6 +908,7 @@ Currently, we only support the error code 400. Support for other error codes wil
       <div class="dark-box">
           <div class="lang-selector">
                 <a href="#" data-language-name="javascript">javascript</a>
+                <a href="#" data-language-name="shell">http</a>
           </div>
       </div>
     </div>
