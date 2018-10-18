@@ -183,6 +183,7 @@ pickup.orderNumber | String order number for your own reference
 pickup.instructions | String instructions for the driver upon reaching the pickup location
 pickup.contact.number | String phone number the driver can call if there is a problem during pickup
 pickup.location.address | String address of the pickup location
+storeID (Http only) | String of the storeID you recieved when signing up with blip
 
 > Example response:
 
@@ -282,6 +283,7 @@ JSON body:
 Parameter | Description
 --------- | -----------
 deliveryID | String deliveryID of a delivery created using `createNewDelivery`
+storeID (Http only) | String of the storeID you recieved when signing up with blip
 
 > Example response:
 
@@ -354,6 +356,7 @@ JSON body:
 Parameter | Description
 --------- | -----------
 deliveryID | String deliveryID of a delivery created using `createNewDelivery`
+storeID (Http only) | String of the storeID you recieved when signing up with blip
 
 > Example response:
 
@@ -454,6 +457,7 @@ JSON body:
 Parameter | Description
 --------- | -----------
 deliveryID | String deliveryID of a delivery created using `createNewDelivery`
+storeID (Http only) | String of the storeID you recieved when signing up with blip
 
 > Example response:
 
