@@ -59,9 +59,8 @@ const quote = await blip.getQuote({
 > Example request:
 
 ```shell
-Live API endpoint: https://api.blip.delivery/getDeliveryPrice
-
-Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryPrice
+https://api.blip.delivery/getDeliveryPrice # Live API endpoint
+https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryPrice # Test API endpoint
 
 JSON body:
 
@@ -139,9 +138,9 @@ const delivery = await blip.createNewDelivery({
 > Example request
 
 ```shell
-Live API endpoint: https://api.blip.delivery/makeDeliveryRequest
+https://api.blip.delivery/makeDeliveryRequest # Live API endpoint
 
-Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/makeDeliveryRequest
+https://us-central1-blip-testapp.cloudfunctions.net/makeDeliveryRequest # Test API endpoint
 
 JSON body:
 
@@ -266,9 +265,9 @@ const status = await blip.getDeliveryStatus({
 > Example request
 
 ```shell
-Live API endpoint: https://api.blip.delivery/getDeliveryStatus
+https://api.blip.delivery/getDeliveryStatus # Live API endpoint
 
-Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryStatus
+https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryStatus # Test API endpoint
 
 JSON body:
 
@@ -338,9 +337,9 @@ const cancellation = await blip.cancelDelivery({
 > Example request
 
 ```shell
-Live API endpoint: https://api.blip.delivery/cancelDelivery
+https://api.blip.delivery/cancelDelivery # Live API endpoint
 
-Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/cancelDelivery
+https://us-central1-blip-testapp.cloudfunctions.net/cancelDelivery # Test API endpoint
 
 JSON body:
 
@@ -438,9 +437,9 @@ const status = await blip.getDriverLocation({
 > Example request
 
 ```shell
-Live API endpoint: https://api.blip.delivery/getDriverLocation
+https://api.blip.delivery/getDriverLocation # Live API endpoint
 
-Test API endpoint: https://us-central1-blip-testapp.cloudfunctions.net/getDriverLocation
+https://us-central1-blip-testapp.cloudfunctions.net/getDriverLocation # Test API endpoint
 
 JSON body:
 
