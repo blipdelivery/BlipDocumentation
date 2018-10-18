@@ -74,7 +74,7 @@ JSON body:
 Parameter | Description
 --------- | -----------
 pickupAddress | The address of your pickup point. Include the locality + city
-available | The address of your delivery point. Include the locality + city
+deliveryAddress | The address of your delivery point. Include the locality + city
 
 <aside class="success">
 Remember — Blip uses googlemaps to parse the address. Always ensure you enter the complete address, or we will be unable to verify the correct coordinates.
