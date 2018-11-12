@@ -2,7 +2,7 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - javascript: javascript
+  - javascript
   - shell: http
 
 toc_footers:
@@ -474,5 +474,145 @@ Parameter | Description
 --------- | -----------
 latitude | Number indicating the current latitude of the driver on your job
 longitude | Number indicating the current longitude of the driver on your job
+
+# Get deliveries
+
+Sometimes, you may need all the delivery requests created by your store. You can use `getDeliveries` to get an array of all the `deliveryID`'s associated with your `storeID`
+
+```javascript
+var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeID to switch to livemode
+
+// A deliveryID is required
+
+const deliveries = await blip.getDeliveries();
+```
+
+> Example request
+
+```shell
+https://api.blip.delivery/getDeliveries # Live API endpoint
+
+https://us-central1-blip-testapp.cloudfunctions.net/getDeliveries # Test API endpoint
+
+JSON body:
+
+{
+	"storeID": "L12354Hhhf9-f"
+}
+```
+
+### Required JSON
+
+Parameter | Description
+--------- | -----------
+storeID (Http only) | String of the storeID you recieved when signing up with blip
+
+> Example response:
+
+```json
+{
+	"deliveries": [
+					"FQAFS8",
+					"QSFG12",
+					"QAFS91"
+				]
+}
+```
+
+### Response JSON
+
+Parameter | Description
+--------- | -----------
+deliveries | Array of `deliveryID`'s associated with your `storeID`
+
+# Get delivery
+
+Sometimes, you might want to get a single delivery object that you can reference with it's corresponding `deliveryID`. To do this, use `getDelivery`, passing in a `deliveryID` in the request body
+
+```javascript
+var blip = require('blip-deliveries')('test'); //Replace 'test' with your storeID to switch to livemode
+
+// A deliveryID is required
+
+const delivery = await blip.getDelivery({
+	"deliveryID": "HNUONU8"
+});
+```
+
+> Example request
+
+```shell
+https://api.blip.delivery/getDelivery # Live API endpoint
+
+https://us-central1-blip-testapp.cloudfunctions.net/getDelivery # Test API endpoint
+
+JSON body:
+
+{
+	"storeID": "L12354Hhhf9-f",
+	"deliveryID": "NJKFN8"
+}
+```
+
+### Required JSON
+
+Parameter | Description
+--------- | -----------
+storeID (Http only) | String of the storeID you recieved when signing up with blip
+deliveryID | String of the deliveryID of the corresponding delivery object you want to retrieve
+
+> Example response:
+
+```json
+{
+	"delivery": {
+		"deliveryStatus": {
+			"timeTaken": null,
+			"timePickedUp": null,
+			"timeDelivered": null,
+			"timeCreated": 1541796957,
+			"pickupETA": null,
+			"dropoffETA": null,
+			"courier": null
+		},
+		"id": "4OOHNJT",
+		"delivery": {
+			"contact": {
+				"name": "John Smith",
+				"number": "+16479839837"
+			},
+			"instructions": "Drop off at security",
+			"location": {
+				"address": "156 Enfield Place, Mississauga",
+				"latitude": 43.5907771,
+				"longitude": -79.6340031
+			}
+		},
+		"pickup": {
+			"contact": {
+				"name": "James Bean",
+				"number": "+16479839836"
+			},
+			"instructions": "Pickup from main desk",
+			"location": {
+				"address": "200 Burnhamthorpe road west, Mississauga",
+				"latitude": 43.5890505,
+				"longitude": -79.64045229999999
+			},
+			"order_number": "ASF715N"
+		}
+	}
+}
+```
+
+### Response JSON
+
+Parameter | Description
+--------- | -----------
+delivery | The delivery object
+deliveryStatus | The delivery status object
+id | The deliveryID of the delivery object
+delivery (child object of the main delivery object) | The dropoff object
+pickup | The pickup object
 
 
