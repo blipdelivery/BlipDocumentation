@@ -319,9 +319,8 @@
 <blockquote>
 <p>To authorize, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">blip</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'blip-deliveries'</span><span class="p">)(</span><span class="s1">'YOURSTOREID'</span><span class="p">);</span> <span class="c1">// Livemode</span>
+<pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">blip</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'blip-deliveries'</span><span class="p">)({</span><span class="s2">"storeID"</span><span class="p">:</span> <span class="s2">"YOURSTOREID"</span><span class="p">,</span> <span class="s2">"livemode"</span><span class="p">:</span> <span class="kc">false</span><span class="p">});</span> <span class="c1">// Switch between livemode and test, using options.</span>
 
-<span class="kr">const</span> <span class="nx">blip</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'blip-deliveries'</span><span class="p">)(</span><span class="s1">'test'</span><span class="p">);</span> <span class="c1">// Testmode</span>
 </code></pre><pre class="highlight shell tab-shell"><code><span class="c"># Authorization is done on a per-call basis. No authorization setup is needed when using Http</span>
 </code></pre>
 <p>Blip uses a storeID to allow access to the API. You can register by <a href="http://www.blip.delivery/">contacting sales</a>.</p>
@@ -342,13 +341,14 @@ You must replace <code>YOURSTOREID</code> with your own storeID.
 <p>Example request:</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code>https://api.blip.delivery/getDeliveryPrice <span class="c"># Live API endpoint</span>
-https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryPrice <span class="c"># Test API endpoint</span>
+https://test.blip.delivery/getDeliveryPrice <span class="c"># Test API endpoint</span>
 
 JSON body:
 
 <span class="o">{</span>
     pickupAddress: <span class="s2">"156 Enfield Place, Mississauga, ON"</span>,
-    deliveryAddress: <span class="s2">"100 City Centre drive, Mississauga, ON"</span>
+    deliveryAddress: <span class="s2">"100 City Centre drive, Mississauga, ON"</span>,
+    storeID: <span class="s2">"YOUR_STOREID_HERE"</span>
 <span class="o">}</span>
 </code></pre>
 <table><thead>
@@ -364,6 +364,10 @@ JSON body:
 <tr>
 <td>deliveryAddress</td>
 <td>The address of your delivery point. Include the locality + city</td>
+</tr>
+<tr>
+<td>storeID(Http only)</td>
+<td>Your storeID</td>
 </tr>
 </tbody></table>
 
@@ -421,7 +425,7 @@ The prices returned are all in cents. eg. 421 == $ 4.21
         <span class="p">}</span>
     <span class="p">},</span>
     <span class="s2">"pickup"</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">"order_number"</span><span class="p">:</span> <span class="s2">"ABC123"</span><span class="p">,</span>
+        <span class="s2">"orderNumber"</span><span class="p">:</span> <span class="s2">"ABC123"</span><span class="p">,</span>
         <span class="s2">"instructions"</span><span class="p">:</span> <span class="s2">"Pickup from the main desk"</span><span class="p">,</span>
         <span class="s2">"contact"</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">"number"</span><span class="p">:</span> <span class="s2">"+16478229867"</span>
@@ -437,7 +441,7 @@ The prices returned are all in cents. eg. 421 == $ 4.21
 </blockquote>
 <pre class="highlight shell tab-shell"><code>https://api.blip.delivery/makeDeliveryRequest <span class="c"># Live API endpoint</span>
 
-https://us-central1-blip-testapp.cloudfunctions.net/makeDeliveryRequest <span class="c"># Test API endpoint</span>
+https://test.blip.delivery/makeDeliveryRequest <span class="c"># Test API endpoint</span>
 
 JSON body:
 
@@ -453,7 +457,6 @@ JSON body:
         <span class="o">}</span>
     <span class="o">}</span>,
     <span class="s2">"pickup"</span>: <span class="o">{</span>
-        <span class="s2">"order_number"</span>: <span class="s2">"ABC123"</span>,
         <span class="s2">"instructions"</span>: <span class="s2">"Pickup from the main desk"</span>,
         <span class="s2">"contact"</span>: <span class="o">{</span>
             <span class="s2">"number"</span>: <span class="s2">"+16478229867"</span>
@@ -461,6 +464,10 @@ JSON body:
         <span class="s2">"location"</span>: <span class="o">{</span>
             <span class="s2">"address"</span>: <span class="s2">"200 Burnhamthorpe road west, Mississauga, ON"</span>
         <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"metadata"</span>: <span class="o">{</span>
+        <span class="s2">"orderNumber"</span>: <span class="s2">"ABC123"</span>,
+        <span class="s2">"appID"</span>: <span class="s2">"OPTIONAL_EG_SHOPIFY"</span>
     <span class="o">}</span>,
     storeID: <span class="s2">"L12354Hhhf9-f"</span>
 <span class="o">}</span>
@@ -480,6 +487,10 @@ JSON body:
 <td>A pickup object composed of an order number, contact, location, and instruction.</td>
 </tr>
 <tr>
+<td>metadata</td>
+<td>An object containing an order number for your own reference plus an optional appID for example &quot;shopify&quot;</td>
+</tr>
+<tr>
 <td>delivery.contact.name</td>
 <td>String name of the reciever</td>
 </tr>
@@ -496,8 +507,12 @@ JSON body:
 <td>String instruction for the driver upon reaching the delivery point</td>
 </tr>
 <tr>
-<td>pickup.orderNumber</td>
+<td>metadata.orderNumber</td>
 <td>String order number for your own reference</td>
+</tr>
+<tr>
+<td>metadata.appID</td>
+<td>String to reference the app from which this request has been generated</td>
 </tr>
 <tr>
 <td>pickup.instructions</td>
@@ -521,10 +536,7 @@ JSON body:
 <p>Example response:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-    </span><span class="s2">"store"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"storeID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-LJlJ-xuYqEtgs6C1qky"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"storeName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bobs Brilliant BattleAxes"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"storeID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-LJlJ-xuYqEtgs6C1qky"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"delivery"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="s2">"contact"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
             </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John Smith"</span><span class="p">,</span><span class="w">
@@ -538,7 +550,6 @@ JSON body:
         </span><span class="s2">"instructions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Deliver to the lobby"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="s2">"pickup"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"order_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ABC123"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"contact"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
             </span><span class="s2">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+16478229867"</span><span class="w">
         </span><span class="p">},</span><span class="w">
@@ -548,6 +559,10 @@ JSON body:
             </span><span class="s2">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">-79.64045229999999</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="s2">"instructions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pickup from the main desk"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"metaData"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"orderNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ABC123"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"appID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"shopify"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="s2">"timeCreated"</span><span class="p">:</span><span class="w"> </span><span class="mi">1537389047</span><span class="w">
@@ -569,6 +584,10 @@ JSON body:
 <tr>
 <td>pickup</td>
 <td>A pickup object composed of an order number, contact, location, and instruction.</td>
+</tr>
+<tr>
+<td>metadata</td>
+<td>An object containing an order number for your own reference plus an optional appID for example &quot;shopify&quot;</td>
 </tr>
 <tr>
 <td>delivery.contact.name</td>
@@ -595,8 +614,12 @@ JSON body:
 <td>String instruction for the driver upon reaching the delivery point</td>
 </tr>
 <tr>
-<td>pickup.orderNumber</td>
+<td>metadata.orderNumber</td>
 <td>String order number for your own reference</td>
+</tr>
+<tr>
+<td>metadata.appID</td>
+<td>String to reference the app from which this request has been generated</td>
 </tr>
 <tr>
 <td>pickup.instructions</td>
@@ -648,7 +671,7 @@ Remember to save the <code>deliveryID</code> in your database, so you can retrie
 </blockquote>
 <pre class="highlight shell tab-shell"><code>https://api.blip.delivery/getDeliveryStatus <span class="c"># Live API endpoint</span>
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryStatus <span class="c"># Test API endpoint</span>
+https://test.blip.delivery/getDeliveryStatus <span class="c"># Test API endpoint</span>
 
 JSON body:
 
@@ -762,7 +785,7 @@ JSON body:
 </blockquote>
 <pre class="highlight shell tab-shell"><code>https://api.blip.delivery/cancelDelivery <span class="c"># Live API endpoint</span>
 
-https://us-central1-blip-testapp.cloudfunctions.net/cancelDelivery <span class="c"># Test API endpoint</span>
+https://test.blip.delivery/cancelDelivery <span class="c"># Test API endpoint</span>
 
 JSON body:
 
@@ -829,8 +852,10 @@ JSON body:
                 </span><span class="s2">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"200 Burnhamthorpe road west, Mississauga"</span><span class="p">,</span><span class="w">
                 </span><span class="s2">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">43.5890505</span><span class="p">,</span><span class="w">
                 </span><span class="s2">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">-79.64045229999999</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="s2">"order_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASF715N"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"orderNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASF715N"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
             </span><span class="s2">"timeCreated"</span><span class="p">:</span><span class="w"> </span><span class="mi">1537389047</span><span class="w">
@@ -874,7 +899,7 @@ JSON body:
 </blockquote>
 <pre class="highlight shell tab-shell"><code>https://api.blip.delivery/getDriverLocation <span class="c"># Live API endpoint</span>
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDriverLocation <span class="c"># Test API endpoint</span>
+https://test.blip.delivery/getDriverLocation <span class="c"># Test API endpoint</span>
 
 JSON body:
 
@@ -935,7 +960,7 @@ JSON body:
 </blockquote>
 <pre class="highlight shell tab-shell"><code>https://api.blip.delivery/getDeliveries <span class="c"># Live API endpoint</span>
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDeliveries <span class="c"># Test API endpoint</span>
+https://test.blip.delivery/getDeliveries <span class="c"># Test API endpoint</span>
 
 JSON body:
 
@@ -992,7 +1017,7 @@ JSON body:
 </blockquote>
 <pre class="highlight shell tab-shell"><code>https://api.blip.delivery/getDelivery <span class="c"># Live API endpoint</span>
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDelivery <span class="c"># Test API endpoint</span>
+https://test.blip.delivery/getDelivery <span class="c"># Test API endpoint</span>
 
 JSON body:
 
@@ -1054,8 +1079,10 @@ JSON body:
                 </span><span class="s2">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"200 Burnhamthorpe road west, Mississauga"</span><span class="p">,</span><span class="w">
                 </span><span class="s2">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">43.5890505</span><span class="p">,</span><span class="w">
                 </span><span class="s2">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">-79.64045229999999</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="s2">"order_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASF715N"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"orderNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASF715N"</span><span class="w">
         </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
