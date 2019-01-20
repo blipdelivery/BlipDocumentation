@@ -26,9 +26,8 @@ Welcome to the Blip.delivery API! Our API endpoints can be bundled into any appl
 > To authorize, use this code:
 
 ```javascript
-const blip = require('blip-deliveries')('YOURSTOREID'); // Livemode
+const blip = require('blip-deliveries')({"storeID": "YOURSTOREID", "livemode": false}); // Switch between livemode and test, using options.
 
-const blip = require('blip-deliveries')('test'); // Testmode
 ```
 
 ```shell
@@ -60,13 +59,14 @@ const quote = await blip.getQuote({
 
 ```shell
 https://api.blip.delivery/getDeliveryPrice # Live API endpoint
-https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryPrice # Test API endpoint
+https://test.blip.delivery/getDeliveryPrice # Test API endpoint
 
 JSON body:
 
 {
 	pickupAddress: "156 Enfield Place, Mississauga, ON",
-    deliveryAddress: "100 City Centre drive, Mississauga, ON"
+    deliveryAddress: "100 City Centre drive, Mississauga, ON",
+	storeID: "YOUR_STOREID_HERE"
 }
 ```
 
@@ -75,6 +75,7 @@ Parameter | Description
 --------- | -----------
 pickupAddress | The address of your pickup point. Include the locality + city
 deliveryAddress | The address of your delivery point. Include the locality + city
+storeID(Http only) | Your storeID
 
 <aside class="success">
 Remember — Blip uses googlemaps to parse the address. Always ensure you enter the complete address, or we will be unable to verify the correct coordinates.
@@ -123,7 +124,7 @@ const delivery = await blip.createNewDelivery({
         }
     },
     "pickup": {
-        "order_number": "ABC123",
+        "orderNumber": "ABC123",
         "instructions": "Pickup from the main desk",
         "contact": {
             "number": "+16478229867"
@@ -140,7 +141,7 @@ const delivery = await blip.createNewDelivery({
 ```shell
 https://api.blip.delivery/makeDeliveryRequest # Live API endpoint
 
-https://us-central1-blip-testapp.cloudfunctions.net/makeDeliveryRequest # Test API endpoint
+https://test.blip.delivery/makeDeliveryRequest # Test API endpoint
 
 JSON body:
 
@@ -156,7 +157,6 @@ JSON body:
         }
     },
     "pickup": {
-        "order_number": "ABC123",
         "instructions": "Pickup from the main desk",
         "contact": {
             "number": "+16478229867"
@@ -165,6 +165,10 @@ JSON body:
             "address": "200 Burnhamthorpe road west, Mississauga, ON"
         }
     },
+	"metadata": {
+		"orderNumber": "ABC123",
+		"appID": "OPTIONAL_EG_SHOPIFY"
+	},
 	storeID: "L12354Hhhf9-f"
 }
 ```
@@ -175,11 +179,13 @@ Parameter | Description
 --------- | -----------
 delivery | A delivery object composed of a contact, location, and instruction.
 pickup | A pickup object composed of an order number, contact, location, and instruction.
+metadata | An object containing an order number for your own reference plus an optional appID for example "shopify"
 delivery.contact.name | String name of the reciever
 delivery.contact.number | String phone number of the reciever
 delivery.location.address | String address of the delivery location
 delivery.instruction | String instruction for the driver upon reaching the delivery point
-pickup.orderNumber | String order number for your own reference
+metadata.orderNumber | String order number for your own reference
+metadata.appID | String to reference the app from which this request has been generated
 pickup.instructions | String instructions for the driver upon reaching the pickup location
 pickup.contact.number | String phone number the driver can call if there is a problem during pickup
 pickup.location.address | String address of the pickup location
@@ -189,10 +195,7 @@ storeID (Http only) | String of the storeID you recieved when signing up with bl
 
 ```json
 {
-	"store": {
-		"storeID": "-LJlJ-xuYqEtgs6C1qky",
-		"storeName": "Bobs Brilliant BattleAxes"
-	},
+	"storeID": "-LJlJ-xuYqEtgs6C1qky",
 	"delivery": {
 		"contact": {
 			"name": "John Smith",
@@ -206,7 +209,6 @@ storeID (Http only) | String of the storeID you recieved when signing up with bl
 		"instructions": "Deliver to the lobby"
 	},
 	"pickup": {
-		"order_number": "ABC123",
 		"contact": {
 			"number": "+16478229867"
 		},
@@ -216,6 +218,10 @@ storeID (Http only) | String of the storeID you recieved when signing up with bl
 			"longitude": -79.64045229999999
 		},
 		"instructions": "Pickup from the main desk"
+	},
+	"metaData": {
+		"orderNumber": "ABC123",
+		"appID": "shopify"
 	},
 	"status": {
 		"timeCreated": 1537389047
@@ -231,13 +237,15 @@ Parameter | Description
 --------- | -----------
 delivery | A delivery object composed of a contact, location, and instruction.
 pickup | A pickup object composed of an order number, contact, location, and instruction.
+metadata | An object containing an order number for your own reference plus an optional appID for example "shopify"
 delivery.contact.name | String name of the reciever
 delivery.contact.number | String phone number of the reciever
 delivery.location.address | String address of the delivery location
 delivery.location.latitude | Coordinate of the delivery location's latitude
 delivery.location.longitude | Coordinate of the delivery location's longitude
 delivery.instruction | String instruction for the driver upon reaching the delivery point
-pickup.orderNumber | String order number for your own reference
+metadata.orderNumber | String order number for your own reference
+metadata.appID | String to reference the app from which this request has been generated
 pickup.instructions | String instructions for the driver upon reaching the pickup location
 pickup.contact.number | String phone number the driver can call if there is a problem during pickup
 pickup.location.address | String address of the pickup location
@@ -268,7 +276,7 @@ const status = await blip.getDeliveryStatus({
 ```shell
 https://api.blip.delivery/getDeliveryStatus # Live API endpoint
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDeliveryStatus # Test API endpoint
+https://test.blip.delivery/getDeliveryStatus # Test API endpoint
 
 JSON body:
 
@@ -341,7 +349,7 @@ const cancellation = await blip.cancelDelivery({
 ```shell
 https://api.blip.delivery/cancelDelivery # Live API endpoint
 
-https://us-central1-blip-testapp.cloudfunctions.net/cancelDelivery # Test API endpoint
+https://test.blip.delivery/cancelDelivery # Test API endpoint
 
 JSON body:
 
@@ -400,8 +408,10 @@ storeID (Http only) | String of the storeID you recieved when signing up with bl
 				"address": "200 Burnhamthorpe road west, Mississauga",
 				"latitude": 43.5890505,
 				"longitude": -79.64045229999999
-			},
-			"order_number": "ASF715N"
+			}
+		},
+		"metadata": {
+			"orderNumber": "ASF715N"
 		},
 		"status": {
 			"timeCreated": 1537389047
@@ -442,7 +452,7 @@ const status = await blip.getDriverLocation({
 ```shell
 https://api.blip.delivery/getDriverLocation # Live API endpoint
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDriverLocation # Test API endpoint
+https://test.blip.delivery/getDriverLocation # Test API endpoint
 
 JSON body:
 
@@ -492,7 +502,7 @@ const deliveries = await blip.getDeliveries();
 ```shell
 https://api.blip.delivery/getDeliveries # Live API endpoint
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDeliveries # Test API endpoint
+https://test.blip.delivery/getDeliveries # Test API endpoint
 
 JSON body:
 
@@ -544,7 +554,7 @@ const delivery = await blip.getDelivery({
 ```shell
 https://api.blip.delivery/getDelivery # Live API endpoint
 
-https://us-central1-blip-testapp.cloudfunctions.net/getDelivery # Test API endpoint
+https://test.blip.delivery/getDelivery # Test API endpoint
 
 JSON body:
 
@@ -598,8 +608,10 @@ deliveryID | String of the deliveryID of the corresponding delivery object you w
 				"address": "200 Burnhamthorpe road west, Mississauga",
 				"latitude": 43.5890505,
 				"longitude": -79.64045229999999
-			},
-			"order_number": "ASF715N"
+			}
+		},
+		"metadata": {
+			"orderNumber": "ASF715N"
 		}
 	}
 }
