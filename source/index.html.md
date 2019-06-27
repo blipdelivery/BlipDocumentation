@@ -49,9 +49,9 @@ https://test.blip.delivery/getDeliveryPrice # Test API endpoint
 JSON body:
 
 {
-	pickupAddress: "156 Enfield Place, Mississauga, ON",
+    pickupAddress: "156 Enfield Place, Mississauga, ON",
     deliveryAddress: "100 City Centre drive, Mississauga, ON",
-	storeID: YOUR_STOREID_HERE
+    storeID: YOUR_STOREID_HERE
 }
 ```
 
@@ -103,7 +103,7 @@ https://test.blip.delivery/makeDeliveryRequest # Test API endpoint
 JSON body:
 
 {
-	delivery: {
+    delivery: {
         instructions: "Deliver to the lobby",
         contact: {
             name: "John Smith",
@@ -123,11 +123,12 @@ JSON body:
             address: "200 Burnhamthorpe road west, Mississauga, ON"
         }
     },
-	metadata: {
-		orderNumber: "ABC123",
-		appID: "Shopify"
-	},
-	storeID: "L12354Hhhf9-f"
+    dropoffTime: 14151351351,
+    metadata: {
+        orderNumber: "ABC123",
+        appID: "Shopify"
+    },
+    storeID: "L12354Hhhf9-f"
 }
 ```
 
@@ -139,6 +140,7 @@ delivery.contact.name | String name of the reciever
 delivery.contact.number | String phone number of the reciever
 delivery.location.address | String address of the delivery location
 delivery.instructions | String instruction for the driver upon reaching the delivery point `OPTIONAL`
+delivery.dropoffTime | Unix timestamp for the start of the delivery window. For eg. if the delivery window is between 1pm - 2pm, use the Unix timestamp for 1pm `OPTIONAL`
 metadata.orderNumber | String order number for your own reference
 metadata.appID | String descrbing the app that made the order `OPTIONAL`
 pickup.instructions | String instructions for the driver upon reaching the pickup location `OPTIONAL`
